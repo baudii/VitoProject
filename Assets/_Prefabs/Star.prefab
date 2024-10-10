@@ -133,7 +133,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.22, y: 0.84, z: -0.58414274}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2950558061906276051}
@@ -152,7 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rend: {fileID: 3276120044552281753}
-  starData:
+  brightStarMagnitude: 6
+  brightStarMaterial: {fileID: 2100000, guid: 3016cf6324de2b244a7413aaec19d2db, type: 2}
+  data:
     id: 0
     ra: 0
     dec: 0

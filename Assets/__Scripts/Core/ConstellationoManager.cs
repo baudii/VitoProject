@@ -8,7 +8,7 @@ public class ConstellationoManager : MonoBehaviour
 	[SerializeField] ConstellationDisplay[] constellations;
 
 #if UNITY_EDITOR
-	[SerializeField, Tooltip("Check this to tune thing on runtime")] bool runtimeUpdate;
+	[SerializeField, Tooltip("Check this on to tune some parameters on runtime")] bool runtimeUpdate;
 
 
 	private void Update()
@@ -18,7 +18,7 @@ public class ConstellationoManager : MonoBehaviour
 
 		foreach (var con in constellations)
 		{
-			con.UpdateLines(lineWidth, lineStarOffset);
+			con.UpdateLines(lineWidth);
 		}
 	}
 
@@ -28,7 +28,7 @@ public class ConstellationoManager : MonoBehaviour
 	{
 		foreach (var con in constellations)
 		{
-			con.Init(transform, lineStarOffset);
+			con.Init(lineStarOffset);
 		}
 	}
 }

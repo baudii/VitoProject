@@ -5,6 +5,8 @@ using System.Linq;
 public class StarDisplay : MonoBehaviour
 {
 	[SerializeField] Renderer rend;
+	[SerializeField] float brightStarMagnitude;
+	[SerializeField] Material brightStarMaterial;
 	public StarData data;
 
 	void SetNeighbours(ConstellationData constellationData)
@@ -15,6 +17,9 @@ public class StarDisplay : MonoBehaviour
 	public void Init(StarData starData, ConstellationData constellationData, Transform cameraTransform)
 	{
 		data = starData;
+
+		if (data.magnitude >+ brightStarMagnitude)
+			rend.material = brightStarMaterial;
 
 		transform.position = starData.WorldPos;
 		transform.LookAt(cameraTransform);

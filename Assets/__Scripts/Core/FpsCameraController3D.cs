@@ -5,8 +5,9 @@ public class FpsCameraController3D : MonoBehaviour
     [SerializeField] Transform camTransform;
     [SerializeField] Vector2 rotationSens;
 
-    float yRotation = 0;
-    float xRotation = 0;
+    float xRotation = -50;
+    float yRotation = 100;
+
 
     private void Awake()
     {

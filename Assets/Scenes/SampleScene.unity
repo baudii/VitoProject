@@ -316,13 +316,44 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5653365af7abef147839ab0463d757ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   camTransform: {fileID: 963194228}
   rotationSens: {x: 1, y: 1}
+--- !u!1 &968909344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 968909345}
+  m_Layer: 0
+  m_Name: Stars Cygnus
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &968909345
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968909344}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1600868927}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1012790553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -335,6 +366,10 @@ PrefabInstance:
       propertyPath: JsonAsset
       value: 
       objectReference: {fileID: 4900000, guid: 998b8ea5b359c104fb18dea723f3fad6, type: 3}
+    - target: {fileID: 1260849906208590709, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
+      propertyPath: starsParent
+      value: 
+      objectReference: {fileID: 1132131564}
     - target: {fileID: 4413923030473144768, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.88
@@ -400,6 +435,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b35c5ab031202a42ae05c8192c4fbe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1132131563
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1132131564}
+  m_Layer: 0
+  m_Name: Stars And
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1132131564
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1132131563}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1600868927}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1600868925
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,12 +495,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61581f49275d90a449436716efec8f36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineWidth: 0
+  lineStarOffset: 2
+  lineWidth: 1.68
   constallationPrefab: {fileID: 1260849906208590709, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
   constellations:
   - {fileID: 1606885468}
   - {fileID: 1115068694}
-  validate: 0
+  runtimeUpdate: 1
 --- !u!4 &1600868927
 Transform:
   m_ObjectHideFlags: 0
@@ -450,6 +517,8 @@ Transform:
   m_Children:
   - {fileID: 1606885467}
   - {fileID: 1115068693}
+  - {fileID: 1132131564}
+  - {fileID: 968909345}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1606885467 stripped
@@ -480,6 +549,10 @@ PrefabInstance:
       propertyPath: JsonAsset
       value: 
       objectReference: {fileID: 4900000, guid: 61c603379bc4d02448e3876673508ce3, type: 3}
+    - target: {fileID: 1260849906208590709, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
+      propertyPath: starsParent
+      value: 
+      objectReference: {fileID: 968909345}
     - target: {fileID: 2061812272309427382, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
