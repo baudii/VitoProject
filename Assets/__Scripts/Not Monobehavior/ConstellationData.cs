@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
-using System.Linq;
 
 [Serializable]
 public struct ConstellationData
 {
+	// Класс для хранения данных о созвездии
+
 	public string name;
 	public float ra;
 	public float dec;
@@ -15,8 +16,22 @@ public struct ConstellationData
 
 	Vector3? worldPos;
 	Vector3? imagePos;
+
+	public ConstellationData(string name, float ra, float dec, ConstellationImageSettings image, List<StarConnection> pairs, List<StarData> stars)
+	{
+		this.name = name;
+		this.ra = ra;
+		this.dec = dec;
+		this.image = image;
+		this.pairs = pairs;
+		this.stars = stars;
+		worldPos = null;
+		imagePos = null;
+	}
+
 	public Vector3 WorldPos
 	{
+		// Рассчитываем значение, если его нет, иначе возращаем
 		get
 		{
 			if (worldPos == null)
@@ -29,6 +44,7 @@ public struct ConstellationData
 
 	public Vector3 ImagePos
 	{
+		// Рассчитываем значение, если его нет, иначе возращаем
 		get
 		{
 			if (imagePos == null)
@@ -38,9 +54,9 @@ public struct ConstellationData
 			return (Vector3)imagePos;
 		}
 	}
-
 }
 
+// Дополнительные классы для извлечения данных JSON
 [Serializable]
 public struct ConstellationImageSettings
 {
@@ -57,6 +73,7 @@ public struct StarConnection
 	public int to;
 }
 
+[Serializable]
 public struct JsonData
 {
 	public ConstellationData[] items;
