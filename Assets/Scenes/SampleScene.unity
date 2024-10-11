@@ -1769,7 +1769,7 @@ MonoBehaviour:
   constellations:
   - {fileID: 1606885468}
   - {fileID: 1115068694}
-  OnStartAnimation: 0
+  OnStartAnimation: 1
 --- !u!4 &1600868927
 Transform:
   m_ObjectHideFlags: 0

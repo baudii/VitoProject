@@ -1,4 +1,4 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 
 public class ConstellationoManager : MonoBehaviour
 {
@@ -25,19 +25,19 @@ public class ConstellationoManager : MonoBehaviour
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
-			AnimateImage(1);
+			AnimateLines(0);
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha3))
 		{
-			AnimateLines(0);
+			RevertAnimation(0);
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha4))
 		{
-			AnimateLines(1);
+			AnimateImage(1);
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha5))
 		{
-			RevertAnimation(0);
+			AnimateLines(1);
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha6))
 		{
@@ -48,6 +48,9 @@ public class ConstellationoManager : MonoBehaviour
 
 	private void Start()
 	{
+		if (!OnStartAnimation)
+			return;
+
 		foreach (var con in constellations)
 		{
 			con.Init(lineStarOffset);
