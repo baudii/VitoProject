@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
@@ -19,18 +19,18 @@ public class StarDisplay : MonoBehaviour
 
 	public void Init(StarData starData, ConstellationDisplay constDisplay, Transform cameraTransform)
 	{
-		// Инициализируем звезду
+		// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј Р·РІРµР·РґСѓ
 		constellation = constDisplay;
 		connections = new List<(LineController, StarDisplay)>();
 		data = starData;
 		initialScale = transform.localScale;
 
-		// Выставляем текстуру и цвет
+		// Р’С‹СЃС‚Р°РІР»СЏРµРј С‚РµРєСЃС‚СѓСЂСѓ Рё С†РІРµС‚
 		if (data.magnitude > brightStarMagnitude)
 			rend.material = brightStarMaterial; 
 		rend.material.color = starData.GetColor();
 
-		// Выставляем трансформ
+		// Р’С‹СЃС‚Р°РІР»СЏРµРј С‚СЂР°РЅСЃС„РѕСЂРј
 		transform.position = starData.WorldPos;
 		transform.LookAt(cameraTransform);
 		transform.localScale = initialScale * starData.magnitude;
@@ -40,21 +40,21 @@ public class StarDisplay : MonoBehaviour
 
 	public void AddConnection(LineController renderer, StarDisplay other)
 	{
-		// Каждая звезда хранит всех своих соседей и соединяющую линию
+		// РљР°Р¶РґР°СЏ Р·РІРµР·РґР° С…СЂР°РЅРёС‚ РІСЃРµС… СЃРІРѕРёС… СЃРѕСЃРµРґРµР№ Рё СЃРѕРµРґРёРЅСЏСЋС‰СѓСЋ Р»РёРЅРёСЋ
 		connections.Add((renderer, other));
 	}
 
-	// Два способа реализации последовательной анимации:
+	// Р”РІР° СЃРїРѕСЃРѕР±Р° СЂРµР°Р»РёР·Р°С†РёРё РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕР№ Р°РЅРёРјР°С†РёРё:
 
-	// Асинхронно - более стабильная
+	// РђСЃРёРЅС…СЂРѕРЅРЅРѕ - Р±РѕР»РµРµ СЃС‚Р°Р±РёР»СЊРЅР°СЏ
 	public async Task<List<StarDisplay>> AnimateAllNeighboursAsync(bool stretchMode)
 	{
 		List<StarDisplay> returnValue = new List<StarDisplay>();
-		int unUsedStars = connections.Count; // Переменная хранит кол-во линий, которые еще не были анимированы
+		int unUsedStars = connections.Count; // РџРµСЂРµРјРµРЅРЅР°СЏ С…СЂР°РЅРёС‚ РєРѕР»-РІРѕ Р»РёРЅРёР№, РєРѕС‚РѕСЂС‹Рµ РµС‰Рµ РЅРµ Р±С‹Р»Рё Р°РЅРёРјРёСЂРѕРІР°РЅС‹
 
 		if (unUsedStars > 0)
 		{
-			StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4)); // Анимируем звезду
+			StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4)); // РђРЅРёРјРёСЂСѓРµРј Р·РІРµР·РґСѓ
 		}
 
 		foreach (var connection in connections)
@@ -67,18 +67,18 @@ public class StarDisplay : MonoBehaviour
 
 			constellation.UsedLines.Add(connection.Item1.GetInstanceID(), connection.Item1);
 
-			// Разные анимации в зависимости от настроек инспектора
+			// Р Р°Р·РЅС‹Рµ Р°РЅРёРјР°С†РёРё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°СЃС‚СЂРѕРµРє РёРЅСЃРїРµРєС‚РѕСЂР°
 			if (stretchMode)
 			{
-				// Анимация растягивания
+				// РђРЅРёРјР°С†РёСЏ СЂР°СЃС‚СЏРіРёРІР°РЅРёСЏ
 				var startStar = this;
 				var endStar = connection.Item2;
 
-				// Выставляем значения LineController
+				// Р’С‹СЃС‚Р°РІР»СЏРµРј Р·РЅР°С‡РµРЅРёСЏ LineController
 				connection.Item1.CalcPositions(startStar, endStar);
 				connection.Item1.SetPosition();
 
-				// Анимируем
+				// РђРЅРёРјРёСЂСѓРµРј
 				connection.Item1.StretchLine(1, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					returnValue.Add(connection.Item2);
@@ -86,7 +86,7 @@ public class StarDisplay : MonoBehaviour
 			}
 			else
 			{
-				// Анимация прозрачности
+				// РђРЅРёРјР°С†РёСЏ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
 				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 2, true, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					returnValue.Add(connection.Item2);
@@ -94,14 +94,14 @@ public class StarDisplay : MonoBehaviour
 			}
 		}
 		
-		// Ждем пока все корутины не закончат свой цикл
+		// Р–РґРµРј РїРѕРєР° РІСЃРµ РєРѕСЂСѓС‚РёРЅС‹ РЅРµ Р·Р°РєРѕРЅС‡Р°С‚ СЃРІРѕР№ С†РёРєР»
 		await Helper.WaitUntil(() => returnValue.Count == unUsedStars, 50);
 
 		return returnValue;
 	}
 
 
-	// Рекурсивно - нужно еще любви
+	// Р РµРєСѓСЂСЃРёРІРЅРѕ - РЅСѓР¶РЅРѕ РµС‰Рµ Р»СЋР±РІРё
 	public void ToggleConnections(bool stretchMode, Action OnComplete = null)
 	{
 		if (recursionFinished) 
@@ -109,7 +109,7 @@ public class StarDisplay : MonoBehaviour
 
 		if (constellation.UsedLines.Count == constellation.LineRendererCount)
 		{ 
-			// Сделать что-то напоследок
+			// РЎРґРµР»Р°С‚СЊ С‡С‚Рѕ-С‚Рѕ РЅР°РїРѕСЃР»РµРґРѕРє
 			recursionFinished = true;
 			constellation.UsedLines.Clear();
 			OnComplete?.Invoke();
@@ -118,36 +118,36 @@ public class StarDisplay : MonoBehaviour
 
 		StartCoroutine(Helper.ScaleBounceAnimation(transform, 2, 4));
 		
-		// Проходим циклом по всем соседним звездам
+		// РџСЂРѕС…РѕРґРёРј С†РёРєР»РѕРј РїРѕ РІСЃРµРј СЃРѕСЃРµРґРЅРёРј Р·РІРµР·РґР°Рј
 		foreach (var connection in connections)
 		{
-			if (constellation.UsedLines.ContainsKey(connection.Item1.GetInstanceID())) // Если мы уже встречали соединяющую линию, то ничего не делаем
+			if (constellation.UsedLines.ContainsKey(connection.Item1.GetInstanceID())) // Р•СЃР»Рё РјС‹ СѓР¶Рµ РІСЃС‚СЂРµС‡Р°Р»Рё СЃРѕРµРґРёРЅСЏСЋС‰СѓСЋ Р»РёРЅРёСЋ, С‚Рѕ РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 				continue;
 
-			constellation.UsedLines.Add(connection.Item1.GetInstanceID(), connection.Item1); // Добавляем соединяющую линию
+			constellation.UsedLines.Add(connection.Item1.GetInstanceID(), connection.Item1); // Р”РѕР±Р°РІР»СЏРµРј СЃРѕРµРґРёРЅСЏСЋС‰СѓСЋ Р»РёРЅРёСЋ
 
-			// Разные анимации в зависимости от настроек инспектора
+			// Р Р°Р·РЅС‹Рµ Р°РЅРёРјР°С†РёРё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°СЃС‚СЂРѕРµРє РёРЅСЃРїРµРєС‚РѕСЂР°
 			if (stretchMode)
 			{
-				// Анимация растягивания
+				// РђРЅРёРјР°С†РёСЏ СЂР°СЃС‚СЏРіРёРІР°РЅРёСЏ
 				var startStar = this;
 				var endStar = connection.Item2;
 
-				// Выставляем значения LineController
+				// Р’С‹СЃС‚Р°РІР»СЏРµРј Р·РЅР°С‡РµРЅРёСЏ LineController
 				connection.Item1.CalcPositions(startStar, endStar);
 				connection.Item1.SetPosition();
 
 				connection.Item1.StretchLine(1, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
-					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
+					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Р’С‹Р·С‹РІР°РµРј СЌС‚Сѓ Р¶Рµ С„СѓРЅРєС†РёСЋ
 				});
 			}
 			else
 			{
-				// Анимация прозрачности
+				// РђРЅРёРјР°С†РёСЏ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
 				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 2, true, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
-					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
+					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Р’С‹Р·С‹РІР°РµРј СЌС‚Сѓ Р¶Рµ С„СѓРЅРєС†РёСЋ
 				}));
 			}
 		}

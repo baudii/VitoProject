@@ -1,10 +1,10 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using System.Collections;
 using System;
 
 public class LineController : MonoBehaviour
 {
-	// Класс для управление поведением линией (в основной по части анимаций)
+	// РљР»Р°СЃСЃ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёРµ РїРѕРІРµРґРµРЅРёРµРј Р»РёРЅРёРµР№ (РІ РѕСЃРЅРѕРІРЅРѕР№ РїРѕ С‡Р°СЃС‚Рё Р°РЅРёРјР°С†РёР№)
 
 	[SerializeField] 
 	public LineRenderer lineRenderer;
@@ -17,7 +17,7 @@ public class LineController : MonoBehaviour
 
 	public void Init(bool isStretchMode, float lineStarOffset)
 	{
-		// Иницилазиация
+		// РРЅРёС†РёР»Р°Р·РёР°С†РёСЏ
 		var lineColor = lineRenderer.material.color;
 		isStretchAnimMode = isStretchMode;
 		lineColor.a = isStretchMode ? 1 : 0;
@@ -29,7 +29,7 @@ public class LineController : MonoBehaviour
 
 	public void CalcPositions(StarDisplay fromStarDisplay, StarDisplay toStarDisplay) 
 	{
-		// Рассчитываем позиции от и до указанных звезд
+		// Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј РїРѕР·РёС†РёРё РѕС‚ Рё РґРѕ СѓРєР°Р·Р°РЅРЅС‹С… Р·РІРµР·Рґ
 		var fromPos = fromStarDisplay.data.WorldPos;
 		var toPos = toStarDisplay.data.WorldPos;
 		var dir = (toPos - fromPos);
@@ -44,7 +44,7 @@ public class LineController : MonoBehaviour
 
 	public void RevertTarget()
 	{
-		// Меняем местами (для реверта)
+		// РњРµРЅСЏРµРј РјРµСЃС‚Р°РјРё (РґР»СЏ СЂРµРІРµСЂС‚Р°)
 		var tmp = from;
 		from = to;
 		to = tmp;
@@ -52,7 +52,7 @@ public class LineController : MonoBehaviour
 
 	public void SetPosition()
 	{
-		// Выставляем рассчитанные в CalcPositions значения в объект lineRenderer
+		// Р’С‹СЃС‚Р°РІР»СЏРµРј СЂР°СЃСЃС‡РёС‚Р°РЅРЅС‹Рµ РІ CalcPositions Р·РЅР°С‡РµРЅРёСЏ РІ РѕР±СЉРµРєС‚ lineRenderer
 		lineRenderer.SetPosition(0, from);
 
 		if (isStretchAnimMode)
@@ -65,7 +65,7 @@ public class LineController : MonoBehaviour
 
 	private IEnumerator StretchLineCoroutine(float duration, Action OnComplete = null)
 	{
-		// Корутина для анимации растягивания
+		// РљРѕСЂСѓС‚РёРЅР° РґР»СЏ Р°РЅРёРјР°С†РёРё СЂР°СЃС‚СЏРіРёРІР°РЅРёСЏ
 
 		if (lineRenderer.positionCount != 2)
 			yield break;

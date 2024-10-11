@@ -1,10 +1,10 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using System;
 
 [Serializable]
 public struct StarData
 {
-	// Класс для хранения данных о звезде
+	// РљР»Р°СЃСЃ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РґР°РЅРЅС‹С… Рѕ Р·РІРµР·РґРµ
 
 	public int id;
 	public float ra;
@@ -27,7 +27,7 @@ public struct StarData
 
 	public Vector3 WorldPos
 	{
-		// Рассчитываем значение, если его нет, иначе возращаем
+		// Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј Р·РЅР°С‡РµРЅРёРµ, РµСЃР»Рё РµРіРѕ РЅРµС‚, РёРЅР°С‡Рµ РІРѕР·СЂР°С‰Р°РµРј
 		get
 		{
 			if (worldPos == null)

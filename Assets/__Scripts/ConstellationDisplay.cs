@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ public class ConstellationDisplay : MonoBehaviour
 
 	public void Init(float lineStarOffset)
 	{
-		// Инициализируем созвездие
+		// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃРѕР·РІРµР·РґРёРµ
 		var cam = Camera.main;
 		SetupTransform(cam.transform);
 
@@ -49,7 +49,7 @@ public class ConstellationDisplay : MonoBehaviour
 		color.a = 0;
 		rend.material.color = color;
 
-		// Создаем звезды
+		// РЎРѕР·РґР°РµРј Р·РІРµР·РґС‹
 		foreach (var starData in constellationData.stars)
 		{
 			StarDisplay starDisplay = Instantiate(starPrefab, starsParent.transform);
@@ -57,11 +57,11 @@ public class ConstellationDisplay : MonoBehaviour
 			stars.Add(starDisplay);
 		}
 
-		// Находим самую центральную звезду
+		// РќР°С…РѕРґРёРј СЃР°РјСѓСЋ С†РµРЅС‚СЂР°Р»СЊРЅСѓСЋ Р·РІРµР·РґСѓ
 		centerMostStar = stars.Aggregate((minStar, nextStar) =>
 			(constellationData.WorldPos - nextStar.data.WorldPos).magnitude < (constellationData.WorldPos - minStar.data.WorldPos).magnitude ? nextStar : minStar);
 
-		// Создаем соединяющие линии созвездий
+		// РЎРѕР·РґР°РµРј СЃРѕРµРґРёРЅСЏСЋС‰РёРµ Р»РёРЅРёРё СЃРѕР·РІРµР·РґРёР№
 		foreach (var connection in constellationData.pairs)
 		{
 			CreateLine(stars.First(star => star.data.id == connection.from), 
@@ -71,7 +71,7 @@ public class ConstellationDisplay : MonoBehaviour
 	}
 	public void UpdateLinesWidth(float width)
 	{
-		// Метод для редактирования толщины линии в рантайме
+		// РњРµС‚РѕРґ РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ С‚РѕР»С‰РёРЅС‹ Р»РёРЅРёРё РІ СЂР°РЅС‚Р°Р№РјРµ
 		foreach (var line in lines)
 		{
 			line.lineRenderer.startWidth = width;
@@ -81,7 +81,7 @@ public class ConstellationDisplay : MonoBehaviour
 
 	public void AnimateImage(Action OnComplete = null)
 	{
-		// Анимация изображения созвездия
+		// РђРЅРёРјР°С†РёСЏ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ СЃРѕР·РІРµР·РґРёСЏ
 		if (isAnimatingImage)
 			return;
 		isAnimatingImage = true;
@@ -96,7 +96,7 @@ public class ConstellationDisplay : MonoBehaviour
 
 	public void AnimateLines(Action OnComplete = null)
 	{
-		// Анимация линий созвездия
+		// РђРЅРёРјР°С†РёСЏ Р»РёРЅРёР№ СЃРѕР·РІРµР·РґРёСЏ
 		if (isAnimatingLines)
 			return;
 		isAnimatingLines = true;
@@ -106,12 +106,12 @@ public class ConstellationDisplay : MonoBehaviour
 
 	public void RevertAnimation()
 	{
-		// Разворот анимации
+		// Р Р°Р·РІРѕСЂРѕС‚ Р°РЅРёРјР°С†РёРё
 		if (UsedLines.Count == 0)
 			return;
 		isAnimatingLines = true;
 
-		// Останавливаем текущие анимации
+		// РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСѓС‰РёРµ Р°РЅРёРјР°С†РёРё
 		breakAsync = true;
 		foreach (var star in stars)
 		{
@@ -121,7 +121,7 @@ public class ConstellationDisplay : MonoBehaviour
 		foreach (var line in lines)
 			line.StopAllCoroutines();
 
-		// Создаем обратные анимации на тех объектах, которые успели закончить свою анимацию
+		// РЎРѕР·РґР°РµРј РѕР±СЂР°С‚РЅС‹Рµ Р°РЅРёРјР°С†РёРё РЅР° С‚РµС… РѕР±СЉРµРєС‚Р°С…, РєРѕС‚РѕСЂС‹Рµ СѓСЃРїРµР»Рё Р·Р°РєРѕРЅС‡РёС‚СЊ СЃРІРѕСЋ Р°РЅРёРјР°С†РёСЋ
 		foreach (var line in UsedLines.Values)
 		{
 			if (stretchAnimationMode)
@@ -157,9 +157,9 @@ public class ConstellationDisplay : MonoBehaviour
 		if (isLinesEnabled)
 			return;
 
-		// Асинхронный метод для последовательной анимации (без рекурсии)
-		List<StarDisplay> animatingBatch = await centerMostStar.AnimateAllNeighboursAsync(stretchAnimationMode); // Начинаем с самой центральной звезды
-		List<Task<List<StarDisplay>>> tasks = new List<Task<List<StarDisplay>>>(); // Список всех тасков для синхронной анимации
+		// РђСЃРёРЅС…СЂРѕРЅРЅС‹Р№ РјРµС‚РѕРґ РґР»СЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕР№ Р°РЅРёРјР°С†РёРё (Р±РµР· СЂРµРєСѓСЂСЃРёРё)
+		List<StarDisplay> animatingBatch = await centerMostStar.AnimateAllNeighboursAsync(stretchAnimationMode); // РќР°С‡РёРЅР°РµРј СЃ СЃР°РјРѕР№ С†РµРЅС‚СЂР°Р»СЊРЅРѕР№ Р·РІРµР·РґС‹
+		List<Task<List<StarDisplay>>> tasks = new List<Task<List<StarDisplay>>>(); // РЎРїРёСЃРѕРє РІСЃРµС… С‚Р°СЃРєРѕРІ РґР»СЏ СЃРёРЅС…СЂРѕРЅРЅРѕР№ Р°РЅРёРјР°С†РёРё
 
 		while (true)
 		{
@@ -172,15 +172,15 @@ public class ConstellationDisplay : MonoBehaviour
 				tasks.Add(item);
 			}
 			
-			// Если тасков не получено, значит анимации закончились
+			// Р•СЃР»Рё С‚Р°СЃРєРѕРІ РЅРµ РїРѕР»СѓС‡РµРЅРѕ, Р·РЅР°С‡РёС‚ Р°РЅРёРјР°С†РёРё Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ
 			if (tasks.Count == 0)
 				break;
 
 			await Task.WhenAll(tasks);
 
-			animatingBatch.Clear(); // Удаляем уже анимированные звезды
+			animatingBatch.Clear(); // РЈРґР°Р»СЏРµРј СѓР¶Рµ Р°РЅРёРјРёСЂРѕРІР°РЅРЅС‹Рµ Р·РІРµР·РґС‹
 			foreach (var task in tasks) 
-				animatingBatch.AddRange(task.Result); // Добавляем новые (те, что соединены с теми, которые были удалены)
+				animatingBatch.AddRange(task.Result); // Р”РѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Рµ (С‚Рµ, С‡С‚Рѕ СЃРѕРµРґРёРЅРµРЅС‹ СЃ С‚РµРјРё, РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё СѓРґР°Р»РµРЅС‹)
 
 			tasks.Clear();
 		}
@@ -192,7 +192,7 @@ public class ConstellationDisplay : MonoBehaviour
 
 	private void SetupTransform(Transform camTransform)
 	{
-		// Настраиваем трансформ для корректного расположения созвездия на небесной сфере
+		// РќР°СЃС‚СЂР°РёРІР°РµРј С‚СЂР°РЅСЃС„РѕСЂРј РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏ СЃРѕР·РІРµР·РґРёСЏ РЅР° РЅРµР±РµСЃРЅРѕР№ СЃС„РµСЂРµ
 		transform.position = constellationData.WorldPos;
 		GFX.LookAt(camTransform);
 		camTransform.LookAt(GFX);
@@ -204,7 +204,7 @@ public class ConstellationDisplay : MonoBehaviour
 
 	private void CreateLine(StarDisplay fromStarDisplay, StarDisplay toStarDisplay, float lineStarOffset)
 	{
-		// Создаем нужное кол-во линий (по-умолчанию выключены)
+		// РЎРѕР·РґР°РµРј РЅСѓР¶РЅРѕРµ РєРѕР»-РІРѕ Р»РёРЅРёР№ (РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ РІС‹РєР»СЋС‡РµРЅС‹)
 
 		var line = Instantiate(linePrefab, transform);
 		line.Init(stretchAnimationMode, lineStarOffset);
