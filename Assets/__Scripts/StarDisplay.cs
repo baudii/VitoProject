@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 public class StarDisplay : MonoBehaviour
 {
-	[SerializeField] Renderer rend;
-	[SerializeField] float brightStarMagnitude;
-	[SerializeField] Material brightStarMaterial;
+	[SerializeField] private Renderer rend;
+	[SerializeField] private float brightStarMagnitude;
+	[SerializeField] private Material brightStarMaterial;
 
 	public StarData data;
 	public List<(LineController, StarDisplay)> connections;
@@ -15,7 +15,7 @@ public class StarDisplay : MonoBehaviour
 	private ConstellationDisplay constellation;
 	private bool recursionFinished;
 
-	Vector3 initialScale;
+	private Vector3 initialScale;
 
 	public void Init(StarData starData, ConstellationDisplay constDisplay, Transform cameraTransform)
 	{
@@ -52,10 +52,7 @@ public class StarDisplay : MonoBehaviour
 		List<StarDisplay> returnValue = new List<StarDisplay>();
 		int unUsedStars = connections.Count; // Переменная хранит кол-во линий, которые еще не были анимированы
 
-		if (unUsedStars > 0)
-		{
-			StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4)); // Анимируем звезду
-		}
+		StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4, 0.3f)); // Анимируем звезду
 
 		foreach (var connection in connections)
 		{
@@ -87,7 +84,7 @@ public class StarDisplay : MonoBehaviour
 			else
 			{
 				// Анимация прозрачности
-				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 2, true, OnComplete: () => {
+				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 1, true, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					returnValue.Add(connection.Item2);
 				}));
@@ -116,7 +113,7 @@ public class StarDisplay : MonoBehaviour
 			return;
 		}
 
-		StartCoroutine(Helper.ScaleBounceAnimation(transform, 2, 4));
+		StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4));
 		
 		// Проходим циклом по всем соседним звездам
 		foreach (var connection in connections)

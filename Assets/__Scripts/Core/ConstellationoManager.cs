@@ -2,11 +2,11 @@
 
 public class ConstellationoManager : MonoBehaviour
 {
-	[SerializeField, Range(0, 30)] float lineStarOffset;
-	[SerializeField, Range(0,10)] float lineWidth;
-	[SerializeField] ConstellationDisplay constallationPrefab;
-	[SerializeField] ConstellationDisplay[] constellations;
-	[SerializeField] bool OnStartAnimation;
+	[SerializeField, Range(0, 30)] private float lineStarOffset;
+	[SerializeField, Range(0,10)] private float lineWidth;
+	[SerializeField] private ConstellationDisplay constallationPrefab;
+	[SerializeField] private ConstellationDisplay[] constellations;
+	[SerializeField] private bool OnStartAnimation;
 
 
 	private void Update()

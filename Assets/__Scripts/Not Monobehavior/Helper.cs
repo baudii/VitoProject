@@ -2,14 +2,15 @@
 using System.Collections;
 using System;
 using System.Threading.Tasks;
-using Unity.VisualScripting.FullSerializer;
 public static class Helper
 {
 	// Статический класс для максимально общих функций
 
-	public static float radius = 400;
+	
+	// Перевод из координат Ra/Dec в декартовы
 	public static Vector3 RaDecToPosition(float ra, float dec)
 	{
+		float radius = 400;
 		// 360 / 24 = 15 - коэффициент перевода из часов в градусы
 		float raRad = ra * 15 * Mathf.Deg2Rad; 
 		float decRad = dec * Mathf.Deg2Rad;
@@ -21,6 +22,7 @@ public static class Helper
 		return new Vector3(x, y, z);
 	}
 
+	// Анимация типа Fade
 	public static IEnumerator FadeAnimation(Renderer rend, float duration, bool toAppear = true, bool lerpDuartion = true, Action OnComplete = null)
 	{
 		if (duration == 0)
@@ -60,7 +62,9 @@ public static class Helper
 		OnComplete?.Invoke();
 	}
 
-	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, float scaleMultiplier)
+	// Анимация увеличения параметра scale
+	// coefficient - число в (0,1), такое, что мы увеличиваемся duration * coefficient времени и уменьшаемся остальное время
+	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, float scaleMultiplier, float coefficient = 0.5f)
 	{
 		if (duration == 0)
 			throw new ArgumentException("Duration can't be zero");
@@ -68,16 +72,17 @@ public static class Helper
 		Vector3 initialScale = t.localScale;
 		Vector3 targetScale = initialScale * scaleMultiplier;
 		float elapsedTime = 0;
+		float shrinked = duration * coefficient;
 		while (elapsedTime < duration)
 		{
 			elapsedTime += Time.deltaTime;
-			if (elapsedTime < duration * 0.5f) // первую половину времени увеличиваемя, потом уменьшаемся. Если нужно поменять, то надо менять и двойку ниже
+			if (elapsedTime < shrinked) // первую половину времени увеличиваемя, потом уменьшаемся. Если нужно поменять коэффциент, то надо менять и двойку ниже
 			{
-				t.localScale = Vector3.Lerp(initialScale, targetScale, elapsedTime * 2 / duration); // перенёс 1/2 из знаменателя
+				t.localScale = Vector3.Lerp(initialScale, targetScale, elapsedTime / shrinked); // перенёс 1/2 из знаменателя
 			}
 			else
 			{
-				t.localScale = Vector3.Lerp(targetScale, initialScale, elapsedTime * 2 / duration - 1);
+				t.localScale = Vector3.Lerp(targetScale, initialScale, elapsedTime / shrinked - 1);
 			}
 			yield return null;
 		}
@@ -85,6 +90,7 @@ public static class Helper
 		t.localScale = initialScale;
 	}
 
+	// Эмуляция ожидания делегата при использовании асинхронных методов
 	public static async Task WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1)
 	{
 		// Ждем пока не выполнится condition не выдаст true

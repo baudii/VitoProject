@@ -14,8 +14,8 @@ public struct ConstellationData
 	public List<StarConnection> pairs;
 	public List<StarData> stars;
 
-	Vector3? worldPos;
-	Vector3? imagePos;
+	private Vector3? worldPos;
+	private Vector3? imagePos;
 
 	public ConstellationData(string name, float ra, float dec, ConstellationImageSettings image, List<StarConnection> pairs, List<StarData> stars)
 	{

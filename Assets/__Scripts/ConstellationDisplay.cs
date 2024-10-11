@@ -6,13 +6,13 @@ using System;
 
 public class ConstellationDisplay : MonoBehaviour
 {
-	[SerializeField, Tooltip("Lines will stretch instead of fading")] bool stretchAnimationMode;
-	[SerializeField] StarDisplay starPrefab;
-	[SerializeField] Transform starsParent;
-	[SerializeField] Transform GFX;
-	[SerializeField] Renderer rend;
-	[SerializeField] TextAsset JsonAsset;
-	[SerializeField] LineController linePrefab;
+	[SerializeField, Tooltip("Lines will stretch instead of fading")] private bool stretchAnimationMode;
+	[SerializeField] private StarDisplay starPrefab;
+	[SerializeField] private Transform starsParent;
+	[SerializeField] private Transform GFX;
+	[SerializeField] private Renderer rend;
+	[SerializeField] private TextAsset JsonAsset;
+	[SerializeField] private LineController linePrefab;
 
 	public int LineRendererCount => lines.Count;
 	public Dictionary<int, LineController> UsedLines;
@@ -134,7 +134,7 @@ public class ConstellationDisplay : MonoBehaviour
 			}
 			else
 			{
-				line.StartCoroutine(Helper.FadeAnimation(line.lineRenderer, 3, line.IsEnabled, OnComplete: () =>
+				line.StartCoroutine(Helper.FadeAnimation(line.lineRenderer, 1, false, OnComplete: () =>
 				{
 					OnRevertComplete(line);
 				}));

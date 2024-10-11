@@ -13,7 +13,7 @@ public struct StarData
 	public string color;
 
 
-	Vector3? worldPos;
+	private Vector3? worldPos;
 
 	public StarData(int id, float ra, float dec, float magnitude, string color)
 	{

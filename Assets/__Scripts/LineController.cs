@@ -44,7 +44,7 @@ public class LineController : MonoBehaviour
 
 	public void RevertTarget()
 	{
-		// Меняем местами (для реверта)
+		// Меняем местами (для анимации реверта)
 		var tmp = from;
 		from = to;
 		to = tmp;
