@@ -56,6 +56,14 @@ public struct ConstellationData
 	}
 }
 
+// Класс для сериализации созвездия в инспекторе
+[Serializable]
+public class ConstellationInstanceInfo
+{
+	public TextAsset JsonAsset;
+	public Material Material;
+}
+
 // Дополнительные классы для извлечения данных JSON
 [Serializable]
 public struct ConstellationImageSettings

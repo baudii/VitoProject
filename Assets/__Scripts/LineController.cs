@@ -13,9 +13,8 @@ public class LineController : MonoBehaviour
 
 	private Vector3 from, to;
 	private bool isStretchAnimMode;
-	private float lineStarOffset;
 
-	public void Init(bool isStretchMode, float lineStarOffset)
+	public void Init(bool isStretchMode)
 	{
 		// Иницилазиация
 		var lineColor = lineRenderer.material.color;
@@ -24,7 +23,6 @@ public class LineController : MonoBehaviour
 		lineRenderer.material.color = lineColor;
 		lineRenderer.startColor = lineColor;
 		lineRenderer.endColor = lineColor;
-		this.lineStarOffset = lineStarOffset;
 	}
 
 	public void CalcPositions(StarDisplay fromStarDisplay, StarDisplay toStarDisplay) 
@@ -33,9 +31,9 @@ public class LineController : MonoBehaviour
 		var fromPos = fromStarDisplay.data.WorldPos;
 		var toPos = toStarDisplay.data.WorldPos;
 		var dir = (toPos - fromPos);
-		var lso = lineStarOffset;
+		var lso = ConstellationManager.Instance.LineStarOffset;
 
-		if (dir.magnitude < lineStarOffset)
+		if (dir.magnitude < lso)
 			lso = 1;
 
 		from = fromPos + dir.normalized * lso;

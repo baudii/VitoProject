@@ -52,6 +52,8 @@ public class StarDisplay : MonoBehaviour
 		List<StarDisplay> returnValue = new List<StarDisplay>();
 		int unUsedStars = connections.Count; // Переменная хранит кол-во линий, которые еще не были анимированы
 
+		var animDuration = ConstellationManager.Instance.AnimationDuration;
+
 		StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4, 0.3f)); // Анимируем звезду
 
 		foreach (var connection in connections)
@@ -76,7 +78,7 @@ public class StarDisplay : MonoBehaviour
 				connection.Item1.SetPosition();
 
 				// Анимируем
-				connection.Item1.StretchLine(1, OnComplete: () => {
+				connection.Item1.StretchLine(animDuration, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					returnValue.Add(connection.Item2);
 				});
@@ -84,7 +86,7 @@ public class StarDisplay : MonoBehaviour
 			else
 			{
 				// Анимация прозрачности
-				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 1, true, OnComplete: () => {
+				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, animDuration, true, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					returnValue.Add(connection.Item2);
 				}));
@@ -113,6 +115,8 @@ public class StarDisplay : MonoBehaviour
 			return;
 		}
 
+		var animDuration = ConstellationManager.Instance.AnimationDuration;
+
 		StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4));
 		
 		// Проходим циклом по всем соседним звездам
@@ -134,7 +138,7 @@ public class StarDisplay : MonoBehaviour
 				connection.Item1.CalcPositions(startStar, endStar);
 				connection.Item1.SetPosition();
 
-				connection.Item1.StretchLine(1, OnComplete: () => {
+				connection.Item1.StretchLine(animDuration, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
 				});
@@ -142,7 +146,7 @@ public class StarDisplay : MonoBehaviour
 			else
 			{
 				// Анимация прозрачности
-				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, 2, true, OnComplete: () => {
+				StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, animDuration, true, OnComplete: () => {
 					connection.Item1.IsEnabled = true;
 					connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
 				}));

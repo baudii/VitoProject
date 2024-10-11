@@ -8,19 +8,17 @@ public class ConstellationDisplay : MonoBehaviour
 {
 	[SerializeField, Tooltip("Lines will stretch instead of fading")] private bool stretchAnimationMode;
 	[SerializeField] private StarDisplay starPrefab;
-	[SerializeField] private Transform starsParent;
 	[SerializeField] private Transform GFX;
 	[SerializeField] private Renderer rend;
-	[SerializeField] private TextAsset JsonAsset;
 	[SerializeField] private LineController linePrefab;
 
 	public int LineRendererCount => lines.Count;
 	public Dictionary<int, LineController> UsedLines;
 
 	private ConstellationData constellationData;
-
 	private List<StarDisplay> stars;
 	private List<LineController> lines;
+	private Transform starsParent;
 	private StarDisplay centerMostStar;
 	
 	private bool isImageEnabled;
@@ -35,19 +33,21 @@ public class ConstellationDisplay : MonoBehaviour
 	{
 		stars = new List<StarDisplay>();
 		lines = new List<LineController>();
-		constellationData = JsonUtility.FromJson<JsonData>(JsonAsset.text).items[0];
 		UsedLines = new Dictionary<int, LineController>();
+		starsParent = new GameObject().transform;
+		starsParent.SetParent(transform.parent);
 	}
 
-	public void Init(float lineStarOffset)
+	public void Init(ConstellationInstanceInfo instanceInfo)
 	{
 		// Инициализируем созвездие
+		constellationData = JsonUtility.FromJson<JsonData>(instanceInfo.JsonAsset.text).items[0];
+		rend.material = instanceInfo.Material;
 		var cam = Camera.main;
 		SetupTransform(cam.transform);
-
 		var color = rend.material.color;
 		color.a = 0;
-		rend.material.color = color;
+		rend.material.color = color; // rend - отображает изображение созвездия. По умолчанию оно выключено
 
 		// Создаем звезды
 		foreach (var starData in constellationData.stars)
@@ -65,13 +65,13 @@ public class ConstellationDisplay : MonoBehaviour
 		foreach (var connection in constellationData.pairs)
 		{
 			CreateLine(stars.First(star => star.data.id == connection.from), 
-						stars.First(star => star.data.id == connection.to), 
-						lineStarOffset);
+						stars.First(star => star.data.id == connection.to));
 		}
 	}
-	public void UpdateLinesWidth(float width)
+	public void UpdateLinesWidth()
 	{
 		// Метод для редактирования толщины линии в рантайме
+		var width = ConstellationManager.Instance.LineWidth;
 		foreach (var line in lines)
 		{
 			line.lineRenderer.startWidth = width;
@@ -86,7 +86,7 @@ public class ConstellationDisplay : MonoBehaviour
 			return;
 		isAnimatingImage = true;
 		
-		StartCoroutine(Helper.FadeAnimation(rend, 1, !isImageEnabled, OnComplete: () => 
+		StartCoroutine(Helper.FadeAnimation(rend, ConstellationManager.Instance.AnimationDuration, !isImageEnabled, OnComplete: () => 
 		{ 
 			isImageEnabled = !isImageEnabled;
 			isAnimatingImage = false;
@@ -122,19 +122,20 @@ public class ConstellationDisplay : MonoBehaviour
 			line.StopAllCoroutines();
 
 		// Создаем обратные анимации на тех объектах, которые успели закончить свою анимацию
+		var animDuration = ConstellationManager.Instance.AnimationDuration;
 		foreach (var line in UsedLines.Values)
 		{
 			if (stretchAnimationMode)
 			{
 				line.RevertTarget();
-				line.StretchLine(1, () =>
+				line.StretchLine(animDuration, () =>
 				{
 					OnRevertComplete(line);
 				});
 			}
 			else
 			{
-				line.StartCoroutine(Helper.FadeAnimation(line.lineRenderer, 1, false, OnComplete: () =>
+				line.StartCoroutine(Helper.FadeAnimation(line.lineRenderer, animDuration, false, OnComplete: () =>
 				{
 					OnRevertComplete(line);
 				}));
@@ -202,12 +203,12 @@ public class ConstellationDisplay : MonoBehaviour
 		transform.name = constellationData.name;
 	}
 
-	private void CreateLine(StarDisplay fromStarDisplay, StarDisplay toStarDisplay, float lineStarOffset)
+	private void CreateLine(StarDisplay fromStarDisplay, StarDisplay toStarDisplay)
 	{
 		// Создаем нужное кол-во линий (по-умолчанию выключены)
 
 		var line = Instantiate(linePrefab, transform);
-		line.Init(stretchAnimationMode, lineStarOffset);
+		line.Init(stretchAnimationMode);
 
 		line.CalcPositions(fromStarDisplay, toStarDisplay);
 		line.SetPosition();

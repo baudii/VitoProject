@@ -6,7 +6,6 @@ public static class Helper
 {
 	// Статический класс для максимально общих функций
 
-	
 	// Перевод из координат Ra/Dec в декартовы
 	public static Vector3 RaDecToPosition(float ra, float dec)
 	{
