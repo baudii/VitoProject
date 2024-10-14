@@ -5,21 +5,17 @@ using System;
 public class LineController : MonoBehaviour
 {
 	// Класс для управление поведением линией (в основной по части анимаций)
-
 	[SerializeField] 
 	public LineRenderer lineRenderer;
 
 	public bool IsEnabled;
-
+	public float Length;
 	private Vector3 from, to;
-	private bool isStretchAnimMode;
 
-	public void Init(bool isStretchMode)
+	public void Init()
 	{
 		// Иницилазиация
 		var lineColor = lineRenderer.material.color;
-		isStretchAnimMode = isStretchMode;
-		lineColor.a = isStretchMode ? 1 : 0;
 		lineRenderer.material.color = lineColor;
 		lineRenderer.startColor = lineColor;
 		lineRenderer.endColor = lineColor;
@@ -38,6 +34,8 @@ public class LineController : MonoBehaviour
 
 		from = fromPos + dir.normalized * lso;
 		to = toPos - dir.normalized * lso;
+
+		Length = (toPos - fromPos).magnitude;
 	}
 
 	public void RevertTarget()
@@ -50,13 +48,9 @@ public class LineController : MonoBehaviour
 
 	public void SetPosition()
 	{
-		// Выставляем рассчитанные в CalcPositions значения в объект lineRenderer
+		// Выставляем начальные значения для линий
 		lineRenderer.SetPosition(0, from);
-
-		if (isStretchAnimMode)
-			lineRenderer.SetPosition(1, from); 
-		else
-			lineRenderer.SetPosition(1, to);
+		lineRenderer.SetPosition(1, from);
 	}
 
 	public void StretchLine(float duration, Action OnComplete = null) => StartCoroutine(StretchLineCoroutine(duration, OnComplete));
@@ -64,7 +58,6 @@ public class LineController : MonoBehaviour
 	private IEnumerator StretchLineCoroutine(float duration, Action OnComplete = null)
 	{
 		// Корутина для анимации растягивания
-
 		if (lineRenderer.positionCount != 2)
 			yield break;
 

@@ -26,7 +26,7 @@ public class ConstellationManager : Singleton<ConstellationManager>
 
 			if (OnStartAnimation)
 			{
-				con.AnimateLines(() =>
+				con.AnimateLinesOpen(() =>
 				{
 					con.AnimateImage();
 				});
@@ -55,20 +55,13 @@ public class ConstellationManager : Singleton<ConstellationManager>
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha3))
 		{
-			RevertAnimation(0);
+			AnimateImage(1);
 		}
 		if (Input.GetKeyDown(KeyCode.Alpha4))
 		{
-			AnimateImage(1);
-		}
-		if (Input.GetKeyDown(KeyCode.Alpha5))
-		{
 			AnimateLines(1);
 		}
-		if (Input.GetKeyDown(KeyCode.Alpha6))
-		{
-			RevertAnimation(1);
-		}
+
 	}
 
 
@@ -79,11 +72,7 @@ public class ConstellationManager : Singleton<ConstellationManager>
 	}
 	public void AnimateLines(int i)
 	{
-		constellations[i].AnimateLines();
-	}
-	public void RevertAnimation(int i)
-	{
-		constellations[i].RevertAnimation();
+		constellations[i].ToggleAnimations();
 	}
 
 }

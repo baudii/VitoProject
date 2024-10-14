@@ -63,26 +63,25 @@ public static class Helper
 
 	// Анимация увеличения параметра scale
 	// coefficient - число в (0,1), такое, что мы увеличиваемся duration * coefficient времени и уменьшаемся остальное время
-	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, float scaleMultiplier, float coefficient = 0.5f)
+	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, Vector3 initialScale, float scaleMultiplier, float coefficient = 0.5f)
 	{
 		if (duration == 0)
 			throw new ArgumentException("Duration can't be zero");
 
-		Vector3 initialScale = t.localScale;
 		Vector3 targetScale = initialScale * scaleMultiplier;
-		float elapsedTime = 0;
+
+
+		// Линейно интерполируем elapsedTime по текущему скейлу звезды, чтобы продолжить анимацию
+		float elapsedTime = (t.localScale.x - initialScale.x) / (targetScale.x - initialScale.x);
 		float shrinked = duration * coefficient;
 		while (elapsedTime < duration)
 		{
 			elapsedTime += Time.deltaTime;
 			if (elapsedTime < shrinked) // первую половину времени увеличиваемя, потом уменьшаемся. Если нужно поменять коэффциент, то надо менять и двойку ниже
-			{
-				t.localScale = Vector3.Lerp(initialScale, targetScale, elapsedTime / shrinked); // перенёс 1/2 из знаменателя
-			}
+				t.localScale = Vector3.Lerp(initialScale, targetScale, elapsedTime / shrinked);
 			else
-			{
 				t.localScale = Vector3.Lerp(targetScale, initialScale, elapsedTime / shrinked - 1);
-			}
+
 			yield return null;
 		}
 

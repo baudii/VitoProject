@@ -16,6 +16,12 @@ public class MeshCombiner : MonoBehaviour
 		meshSchemas[i].filters.AddRange(filters);
 	}
 
+	public void CombineAllMeshes(Transform parent = null)
+	{
+		for (int i = 0; i < meshSchemas.Length; i++)
+			CombineMeshes(i, parent);
+	}
+
 	public void CombineMeshes(int i, Transform parent = null)
 	{
 		CombineMeshes(meshSchemas[i].material, meshSchemas[i].filters, meshSchemas[i].name, parent);
@@ -33,6 +39,8 @@ public class MeshCombiner : MonoBehaviour
 		}
 
 		// Присваиваем новый меш главному объекту
+		if (parent == null)
+			parent = transform;
 		var mainParent = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
 		mainParent.transform.SetParent(parent);
 		MeshFilter filter = mainParent.GetComponent<MeshFilter>();
