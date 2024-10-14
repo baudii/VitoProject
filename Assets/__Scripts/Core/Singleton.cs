@@ -2,17 +2,21 @@ using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-	static T instance;
+	[SerializeField] bool dontDestroyOnLoad;
+
+	private static T instance;
 	public static T Instance => instance;
 	private void Awake()
 	{
+		var t = typeof(T).Name;
 		if (instance != null)
 			Destroy(gameObject);
 		else
 		{
 			instance = this as T;
-			DontDestroyOnLoad(gameObject);
 			OnAwake();
+			if (dontDestroyOnLoad)
+				DontDestroyOnLoad(gameObject);
 		}
 	}
 

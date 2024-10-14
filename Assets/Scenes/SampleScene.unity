@@ -2305,16 +2305,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61581f49275d90a449436716efec8f36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 0
   lineStarOffset: 2
   lineWidth: 1.68
-  animationDuration: 0.4
+  animationDuration: 0.7
   constallationPrefab: {fileID: 1260849906208590709, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
   constallationInstanceInfo:
   - JsonAsset: {fileID: 4900000, guid: 998b8ea5b359c104fb18dea723f3fad6, type: 3}
     Material: {fileID: 2100000, guid: 0b199f12dadc94e4c86eee15ff203f40, type: 2}
   - JsonAsset: {fileID: 4900000, guid: 61c603379bc4d02448e3876673508ce3, type: 3}
     Material: {fileID: 2100000, guid: 8ba832b4daaaf8346b1703c4e859bd3f, type: 2}
-  OnStartAnimation: 1
+  OnStartAnimation: 0
 --- !u!4 &1600868927
 Transform:
   m_ObjectHideFlags: 0
