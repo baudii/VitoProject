@@ -12,6 +12,14 @@ public class LineController : MonoBehaviour
 	public float Length;
 	private Vector3 from, to;
 
+	private static int animationBuffer;
+	private Action OnAllAnimationsComplete;
+
+	private void OnDestroy()
+	{
+		OnAllAnimationsComplete = null;
+	}
+
 	public void Init()
 	{
 		// Иницилазиация
@@ -53,6 +61,12 @@ public class LineController : MonoBehaviour
 		lineRenderer.SetPosition(1, from);
 	}
 
+	public void PrepareStretchAnimation(Action OnComplete = null)
+	{
+		animationBuffer = 0;
+		OnAllAnimationsComplete = OnComplete;
+	}
+
 	public void StretchLine(float duration, Action OnComplete = null) => StartCoroutine(StretchLineCoroutine(duration, OnComplete));
 
 	private IEnumerator StretchLineCoroutine(float duration, Action OnComplete = null)
@@ -60,10 +74,12 @@ public class LineController : MonoBehaviour
 		// Корутина для анимации растягивания
 		if (lineRenderer.positionCount != 2)
 			yield break;
+		animationBuffer++;
+		Vector3 currentPos = lineRenderer.GetPosition(1);
 
-		Vector3 currentPos;
-
-		float elapsedTime = 0;
+		// Линейно интерполируем вектора, чтобы продолжить анимацию
+		float elapsedTime = duration * (currentPos - from).magnitude / (to - from).magnitude;
+		
 		while (elapsedTime < duration)
 		{
 			elapsedTime += Time.deltaTime;
@@ -73,5 +89,11 @@ public class LineController : MonoBehaviour
 		}
 
 		OnComplete?.Invoke();
+		animationBuffer--;
+		if (animationBuffer == 0)
+		{
+			OnAllAnimationsComplete?.Invoke();
+			OnAllAnimationsComplete = null;
+		}
 	}
 }

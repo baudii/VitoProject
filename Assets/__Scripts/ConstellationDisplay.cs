@@ -180,16 +180,19 @@ public class ConstellationDisplay : MonoBehaviour
 		// Создаем обратные анимации на тех объектах, которые успели закончить свою анимацию
 		var animDuration = ConstellationManager.Instance.AnimationDuration;
 		List<LineController> group;
+		bool allFinishedFlag;
 		for (var i = LineAnimationGroups.Count - 1; i >= 0; i--)
 		{
+			allFinishedFlag = false;
 			group = LineAnimationGroups[i];
 			foreach (var line in group)
 			{
 				line.RevertTarget();
+				line.PrepareStretchAnimation(() => allFinishedFlag = true);
 				line.StretchLine(animDuration, () => line.IsEnabled = false);
 			}
 
-			yield return new WaitForSeconds(animDuration);
+			yield return new WaitUntil(() => allFinishedFlag);
 		}
 
 		isOpeningLines = false;
@@ -233,28 +236,34 @@ public class ConstellationDisplay : MonoBehaviour
 
 	private void CreateStars(Transform lookAt)
 	{
-		CreateDynamicStars(lookAt);
+		CreateDynamicStarsAndLines(lookAt);
 		CreateStaticStars(lookAt);
 	}
 
-	private void CreateDynamicStars(Transform lookAt)
+	private void CreateDynamicStarsAndLines(Transform lookAt)
 	{
-		// Создаем "динамические" звезды (которые участвуют в анимациях = части созвездий)
+		// Создаем "динамические" звезды (которые участвуют в анимациях = части созвездий) и соединяющие их линии
+
+		// Создаем родительский объект для динамических звезд
 		dynamicStarsParent = new GameObject().transform;
 		dynamicStarsParent.SetParent(transform);
 		dynamicStarsParent.name = constellationData.name + "-Stars-Dynamic";
 		dynamicStarsParent.gameObject.SetActive(false);
 
+
+		// Создаем родительский объект для линий
 		linesParent = new GameObject("Lines").transform;
 		linesParent.SetParent(transform); 
 		linesParent.gameObject.SetActive(false);
 
-
+		// Пробегаем циклом по всем связям
 		foreach (var connection in constellationData.pairs)
 		{
+			// Находим элементы по id
 			var fromStarData = constellationData.stars.First(star => star.id == connection.from);
 			var toStarData = constellationData.stars.First(star => star.id == connection.to);
 
+			// Создаем обе звезды, если еще не создали (в силу того, что пары могут содержать дубликаты)
 			if (!dynamicStars.ContainsKey(fromStarData.id))
 			{
 				StarDisplay starDisplay = Instantiate(starPrefab, dynamicStarsParent.transform);
@@ -269,22 +278,28 @@ public class ConstellationDisplay : MonoBehaviour
 				dynamicStars.Add(toStarData.id, starDisplay);
 			}
 
-			// Создаем соединяющие линии созвездий
+			// Создаем соединяющую линию между звездами
 			CreateLine(dynamicStars[fromStarData.id], dynamicStars[toStarData.id]);
 		}
 	}
 
 	private void CreateStaticStars(Transform lookAt)
 	{
-		// Создаем и объединяем статические звезды
+		// Создаем статические звезды
+
+		// Создаем экземпляр MeshCombiner для объединения мешей в один
 		var meshCombiner = Instantiate(meshCombinerPrefab, transform);
 		meshCombiner.name = constellationData.name + "-Stars-Static";
+		
+		// Пробегаем циклом по всем звездам (в т.ч. динамическим), создаем их и добавляем в MeshCombiner
 		foreach (var starData in constellationData.stars)
 		{
 			StarDisplay starDisplay = Instantiate(starPrefab, meshCombiner.transform);
 			starDisplay.Init(starData, this, lookAt);
 			meshCombiner.Add(starDisplay.MeshSchemaIndex, starDisplay.meshFilter);
 		}
+
+		// Комбинируем
 		meshCombiner.CombineAllMeshes();
 	}
 

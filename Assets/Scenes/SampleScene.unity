@@ -2308,7 +2308,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   lineStarOffset: 2
   lineWidth: 1.68
-  animationDuration: 0.13
+  animationDuration: 0.23
   constallationPrefab: {fileID: 1260849906208590709, guid: d2a70c6596ed7724db97dba3746c881d, type: 3}
   constallationInstanceInfo:
   - JsonAsset: {fileID: 4900000, guid: 998b8ea5b359c104fb18dea723f3fad6, type: 3}

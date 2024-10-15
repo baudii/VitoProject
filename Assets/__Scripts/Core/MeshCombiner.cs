@@ -6,14 +6,14 @@ public class MeshCombiner : MonoBehaviour
 {
 	[SerializeField] MeshSchema[] meshSchemas;
 
-	public void Add(int i, MeshFilter filter)
+	public void Add(int schemaIndex, MeshFilter filter)
 	{
-		meshSchemas[i].filters.Add(filter);
+		meshSchemas[schemaIndex].filters.Add(filter);
 	}
 
-	public void AddRange(int i, MeshFilter[] filters)
+	public void AddRange(int schemaIndex, MeshFilter[] filters)
 	{
-		meshSchemas[i].filters.AddRange(filters);
+		meshSchemas[schemaIndex].filters.AddRange(filters);
 	}
 
 	public void CombineAllMeshes(Transform parent = null)
@@ -22,9 +22,9 @@ public class MeshCombiner : MonoBehaviour
 			CombineMeshes(i, parent);
 	}
 
-	public void CombineMeshes(int i, Transform parent = null)
+	public void CombineMeshes(int schemaIndex, Transform parent = null)
 	{
-		CombineMeshes(meshSchemas[i].material, meshSchemas[i].filters, meshSchemas[i].name, parent);
+		CombineMeshes(meshSchemas[schemaIndex].material, meshSchemas[schemaIndex].filters, meshSchemas[schemaIndex].name, parent);
 	}
 
 	private void CombineMeshes(Material material, List<MeshFilter> filters, string name, Transform parent)

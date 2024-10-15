@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections;
-using System;
 
 public class StarDisplay : MonoBehaviour
 {
@@ -90,63 +88,9 @@ public class StarDisplay : MonoBehaviour
 		}
 		
 		// Ждем пока все корутины не закончат свой цикл
-		await Helper.WaitUntil(() => returnValue.Count == unUsedStars, 50);
+		await Helper.WaitUntil(() => returnValue.Count == unUsedStars);
 
 		return returnValue;
 	}
-	/* Рекурсивно - нужно еще любви
-
-		public void ToggleConnections(bool stretchMode, Action OnComplete = null)
-		{
-			if (recursionFinished) 
-				return;
-
-			if (constellation.UsedLines.Count == constellation.LineRendererCount)
-			{ 
-				// Сделать что-то напоследок
-				recursionFinished = true;
-				constellation.UsedLines.Clear();
-				OnComplete?.Invoke();
-				return;
-			}
-
-			var animDuration = ConstellationManager.Instance.AnimationDuration;
-
-			StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, 4));
-
-			// Проходим циклом по всем соседним звездам
-			foreach (var connection in connections)
-			{
-				if (constellation.UsedLines.ContainsKey(connection.Item1.GetInstanceID())) // Если мы уже встречали соединяющую линию, то ничего не делаем
-					continue;
-
-				constellation.UsedLines.Add(connection.Item1.GetInstanceID(), connection.Item1); // Добавляем соединяющую линию
-
-				// Разные анимации в зависимости от настроек инспектора
-				if (stretchMode)
-				{
-					// Анимация растягивания
-					var startStar = this;
-					var endStar = connection.Item2;
-
-					// Выставляем значения LineController
-					connection.Item1.CalcPositions(startStar, endStar);
-					connection.Item1.SetPosition();
-
-					connection.Item1.StretchLine(animDuration, OnComplete: () => {
-						connection.Item1.IsEnabled = true;
-						connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
-					});
-				}
-				else
-				{
-					// Анимация прозрачности
-					StartCoroutine(Helper.FadeAnimation(connection.Item1.lineRenderer, animDuration, true, OnComplete: () => {
-						connection.Item1.IsEnabled = true;
-						connection.Item2.ToggleConnections(stretchMode, OnComplete); // Вызываем эту же функцию
-					}));
-				}
-			}
-		}*/
 }
 
