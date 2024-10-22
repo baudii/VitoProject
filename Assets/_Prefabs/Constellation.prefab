@@ -77,12 +77,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b35c5ab031202a42ae05c8192c4fbe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stretchAnimationMode: 1
   starPrefab: {fileID: 850808899683947902, guid: d3380005a22335c408cc16cd212c8136, type: 3}
   GFX: {fileID: 3923539755319211181}
   rend: {fileID: 2061812272309427382}
   linePrefab: {fileID: 1869456495877735470, guid: 4cdc70ee4fa4d6044a078180cac8b660, type: 3}
   meshCombinerPrefab: {fileID: 4257185240971833086, guid: d71d4d32a0b6b184881142d3b6ce9a8a, type: 3}
+  lineManagerPrefab: {fileID: 1595404515886057327, guid: 8f5c709a7021fd442af4d4c298cc4fd5, type: 3}
+  stop: 0
 --- !u!1 &5522472048556539124
 GameObject:
   m_ObjectHideFlags: 0

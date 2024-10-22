@@ -23,14 +23,6 @@ public class ConstellationManager : Singleton<ConstellationManager>
 			var con = Instantiate(constallationPrefab, transform);
 			con.Init(constallationInstanceInfo[i]);
 			constellations[i] = con;
-
-			if (OnStartAnimation)
-			{
-				con.AnimateLinesOpen(() =>
-				{
-					con.AnimateImage();
-				});
-			}
 		}
 	}
 
@@ -41,7 +33,7 @@ public class ConstellationManager : Singleton<ConstellationManager>
 		// Обновляем ширину линий в рантайме
 		foreach (var con in constellations)
 		{
-			con.UpdateLinesWidth();
+		//	con.LineManager.UpdateLinesWidth();
 		}
 #endif
 
@@ -64,15 +56,13 @@ public class ConstellationManager : Singleton<ConstellationManager>
 
 	}
 
-
-
 	public void AnimateImage(int i)
 	{
-		constellations[i].AnimateImage();
+		constellations[i].ToggleAnimateImage();
 	}
 	public void AnimateLines(int i)
 	{
-		constellations[i].ToggleAnimations();
+		constellations[i].ToggleAnimateLines();
 	}
 
 }

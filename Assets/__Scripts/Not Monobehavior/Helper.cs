@@ -2,6 +2,9 @@
 using System.Collections;
 using System;
 using System.Threading.Tasks;
+using Unity.VisualScripting.FullSerializer;
+using System.Threading;
+using System.Transactions;
 public static class Helper
 {
 	// Статический класс для максимально общих функций
@@ -22,28 +25,26 @@ public static class Helper
 	}
 
 	// Анимация типа Fade
-	public static IEnumerator FadeAnimation(Renderer rend, float duration, bool toAppear = true, bool lerpDuartion = true, Action OnComplete = null)
+	public static IEnumerator FadeAnimation(Renderer rend, float duration, float targetAlpha, bool lerpDuartion = true, Action OnComplete = null)
 	{
-		if (duration == 0)
-			throw new ArgumentException("Duration can't be zero"); // Потому что мы делим на duration
-		
 		Color startColor = rend.material.color;
 		Color currentColor = rend.material.color;
 
-		startColor.a = toAppear ? 0 : 1;
-		float targetAlpha = toAppear ? 1 : 0;
+		bool isFading = startColor.a - targetAlpha > 0;
+
+		startColor.a = isFading ? 1 : 0;
 		
 		float elapsedTime = 0;
 		if (lerpDuartion)
 		{
 			// Линейно интерполируем elapsedTime относительно текущего значения color.a, чтобы продолжить анимацию с того места, где она была остановлена, не удлинняя ее по времени
-			if (toAppear)
+			if (isFading)
 			{
-				elapsedTime = Mathf.Lerp(0, duration, rend.material.color.a);
+				elapsedTime = Mathf.Lerp(duration, 0, rend.material.color.a);
 			}
 			else
 			{
-				elapsedTime = Mathf.Lerp(duration, 0, rend.material.color.a);
+				elapsedTime = Mathf.Lerp(0, duration, rend.material.color.a);
 			}
 		}
 
@@ -65,19 +66,19 @@ public static class Helper
 	// coefficient - число в (0,1), такое, что мы увеличиваемся duration * coefficient времени и уменьшаемся остальное время
 	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, Vector3 initialScale, float scaleMultiplier, float coefficient = 0.5f)
 	{
-		if (duration == 0)
-			throw new ArgumentException("Duration can't be zero");
-
 		Vector3 targetScale = initialScale * scaleMultiplier;
 
-
 		// Линейно интерполируем elapsedTime по текущему скейлу звезды, чтобы продолжить анимацию
-		float elapsedTime = (t.localScale.x - initialScale.x) / (targetScale.x - initialScale.x);
+		// Умножаем на coefficient, чтобы анимация продолжилась с увеличения звезды
+		float elapsedTime = coefficient * (t.localScale - initialScale).magnitude / (targetScale - initialScale).magnitude;
+
 		float shrinked = duration * coefficient;
 		while (elapsedTime < duration)
 		{
 			elapsedTime += Time.deltaTime;
-			if (elapsedTime < shrinked) // первую половину времени увеличиваемя, потом уменьшаемся. Если нужно поменять коэффциент, то надо менять и двойку ниже
+
+			// Сначала duration * coefficitent секунд увеличиваемcя, потом уменьшаемся
+			if (elapsedTime < shrinked)
 				t.localScale = Vector3.Lerp(initialScale, targetScale, elapsedTime / shrinked);
 			else
 				t.localScale = Vector3.Lerp(targetScale, initialScale, elapsedTime / shrinked - 1);
@@ -89,15 +90,34 @@ public static class Helper
 	}
 
 	// Эмуляция ожидания делегата при использовании асинхронных методов
-	public static async Task WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1)
+	public static async Task WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1, CancellationToken token = default)
 	{
-		// Ждем пока не выполнится condition не выдаст true
-		var waitTask = Task.Run(async () =>
+		try
 		{
-			while (!condition()) await Task.Delay(frequency);
-		});
+			// Ждем пока не выполнится condition не выдаст true
+			var waitTask = Task.Run(async () =>
+			{
+				while (!condition())
+					await Task.Delay(frequency, token);
 
-		if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
-			throw new TimeoutException();
+			}, token);
+
+			var delayTask = Task.Delay(timeout, token);
+			var finishedTask = await Task.WhenAny(waitTask, delayTask);
+			token.ThrowIfCancellationRequested();
+
+			if (finishedTask != waitTask)
+				throw new TimeoutException();
+		}
+		catch (OperationCanceledException _) { }
+		catch { throw; }
+	}
+
+	public static Coroutine DelayedExecute(this MonoBehaviour mono, float delay, Action action) => mono.StartCoroutine(DelayedExecute(delay, action));
+
+	public static IEnumerator DelayedExecute(float delay, Action action)
+	{
+		yield return new WaitForSeconds(delay);
+		action?.Invoke();
 	}
 }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 public class StarDisplay : MonoBehaviour
 {
@@ -13,13 +15,13 @@ public class StarDisplay : MonoBehaviour
 	public bool IsDynamic; // Участвует ли в анимациях
 	public int MeshSchemaIndex; // 0 - маленькая, 1 - большая
 	
-	private ConstellationDisplay constellation;
+	private LineManager lineManager;
 	private Vector3 initialScale;
 
-	public void Init(StarData starData, ConstellationDisplay constDisplay, Transform cameraTransform)
+	public void Init(StarData starData, LineManager lineManager, Transform cameraTransform)
 	{
 		// Инициализируем звезду
-		constellation = constDisplay;
+		this.lineManager = lineManager;
 		connections = new List<(LineController, StarDisplay)>();
 		data = starData;
 
@@ -48,48 +50,54 @@ public class StarDisplay : MonoBehaviour
 	// Два способа реализации последовательной анимации:
 
 	// Асинхронно - более стабильная
-	public async Task<List<StarDisplay>> AnimateAllNeighboursAsync(int i)
+	public async Task<List<StarDisplay>> AnimateAllNeighboursAsync(int i, CancellationToken token)
 	{
 		List<StarDisplay> returnValue = new List<StarDisplay>();
-		int unUsedStars = connections.Count; // Переменная хранит кол-во линий, которые еще не были анимированы
-
-		var animDuration = ConstellationManager.Instance.AnimationDuration;
-
-		StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, initialScale, 4, 0.3f)); // Анимируем звезду
-
-		foreach (var connection in connections)
+		try
 		{
-			if (constellation.UsedLines.ContainsKey(connection.Item1.GetInstanceID()))
+			int unUsedStars = connections.Count; // Переменная хранит кол-во линий, которые еще не были анимированы
+
+			var animDuration = ConstellationManager.Instance.AnimationDuration;
+
+			StopAllCoroutines();
+			StartCoroutine(Helper.ScaleBounceAnimation(transform, 1, initialScale, 4, 0.3f)); // Анимируем звезду
+
+			foreach (var connection in connections)
 			{
-				unUsedStars--;
-				continue;
+				if (lineManager.UsedLines.ContainsKey(connection.Item1.GetInstanceID()))
+				{
+					unUsedStars--;
+					continue;
+				}
+
+				var key = connection.Item1.GetInstanceID();
+				lineManager.UsedLines.Add(key, connection.Item1);
+
+				if (!lineManager.LineAnimationGroups.ContainsKey(i))
+					lineManager.LineAnimationGroups[i] = new List<LineController>();
+				lineManager.LineAnimationGroups[i].Add(connection.Item1);
+
+				// Анимация растягивания
+				var startStar = this;
+				var endStar = connection.Item2;
+
+				// Выставляем значения LineController
+				connection.Item1.CalcPositions(startStar, endStar);
+				connection.Item1.SetPosition();
+
+				// Анимируем
+				connection.Item1.StretchLine(animDuration, OnComplete: () => {
+					connection.Item1.IsEnabled = true;
+					returnValue.Add(connection.Item2);
+				});
 			}
 
-			var key = connection.Item1.GetInstanceID();
-			constellation.UsedLines.Add(key, connection.Item1);
-
-			if (!constellation.LineAnimationGroups.ContainsKey(i))
-				constellation.LineAnimationGroups[i] = new List<LineController>();
-			constellation.LineAnimationGroups[i].Add(connection.Item1);
-
-			// Анимация растягивания
-			var startStar = this;
-			var endStar = connection.Item2;
-
-			// Выставляем значения LineController
-			connection.Item1.CalcPositions(startStar, endStar);
-			connection.Item1.SetPosition();
-
-			// Анимируем
-			connection.Item1.StretchLine(animDuration, OnComplete: () => {
-				connection.Item1.IsEnabled = true;
-				returnValue.Add(connection.Item2);
-			});
+			// Ждем пока все корутины не закончат свой цикл
+			await Helper.WaitUntil(() => returnValue.Count == unUsedStars, timeout: 6000, token: token);
+			token.ThrowIfCancellationRequested();
 		}
-		
-		// Ждем пока все корутины не закончат свой цикл
-		await Helper.WaitUntil(() => returnValue.Count == unUsedStars);
-
+		catch (OperationCanceledException _) { }
+		catch { throw; }
 		return returnValue;
 	}
 }

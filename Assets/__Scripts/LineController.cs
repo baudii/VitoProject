@@ -12,19 +12,11 @@ public class LineController : MonoBehaviour
 	public float Length;
 	private Vector3 from, to;
 
-	private static int animationBuffer;
-	private Action OnAllAnimationsComplete;
-
-	private void OnDestroy()
-	{
-		OnAllAnimationsComplete = null;
-	}
-
 	public void Init()
 	{
 		// Иницилазиация
-		var lineColor = lineRenderer.material.color;
-		lineRenderer.material.color = lineColor;
+		var lineColor = lineRenderer.sharedMaterial.color;
+		lineRenderer.sharedMaterial.color = lineColor;
 		lineRenderer.startColor = lineColor;
 		lineRenderer.endColor = lineColor;
 	}
@@ -61,20 +53,15 @@ public class LineController : MonoBehaviour
 		lineRenderer.SetPosition(1, from);
 	}
 
-	public void PrepareStretchAnimation(Action OnComplete = null)
-	{
-		animationBuffer = 0;
-		OnAllAnimationsComplete = OnComplete;
-	}
+	public void StretchLine(float duration, Action OnComplete = null, AnimationBuffer animationBuffer = null) => StartCoroutine(StretchLineCoroutine(duration, OnComplete, animationBuffer));
 
-	public void StretchLine(float duration, Action OnComplete = null) => StartCoroutine(StretchLineCoroutine(duration, OnComplete));
-
-	private IEnumerator StretchLineCoroutine(float duration, Action OnComplete = null)
+	private IEnumerator StretchLineCoroutine(float duration, Action OnComplete = null, AnimationBuffer animationBuffer = null)
 	{
 		// Корутина для анимации растягивания
 		if (lineRenderer.positionCount != 2)
 			yield break;
-		animationBuffer++;
+		if (animationBuffer != null)
+			animationBuffer.Buffer++;
 		Vector3 currentPos = lineRenderer.GetPosition(1);
 
 		// Линейно интерполируем вектора, чтобы продолжить анимацию
@@ -89,11 +76,29 @@ public class LineController : MonoBehaviour
 		}
 
 		OnComplete?.Invoke();
-		animationBuffer--;
-		if (animationBuffer == 0)
+		if (animationBuffer != null)
+			animationBuffer.Buffer--;
+	}
+}
+
+public class AnimationBuffer
+{
+	private int buffer;
+	public int Buffer
+	{
+		get => buffer;
+		set
 		{
-			OnAllAnimationsComplete?.Invoke();
-			OnAllAnimationsComplete = null;
+			buffer = value;
+			if (buffer == 0)
+				Finished = true;
 		}
+	}
+
+	public bool Finished { get; private set; }
+
+	public AnimationBuffer()
+	{
+		buffer = 0;
 	}
 }
