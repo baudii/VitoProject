@@ -46,7 +46,7 @@ public class MeshCombiner : MonoBehaviour
 		MeshFilter filter = mainParent.GetComponent<MeshFilter>();
 		filter.mesh = new Mesh();
 		filter.mesh.CombineMeshes(combineInstance);
-		mainParent.GetComponent<MeshRenderer>().material = material;
+		mainParent.GetComponent<MeshRenderer>().sharedMaterial = material;
 	}
 }
 

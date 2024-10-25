@@ -15,10 +15,10 @@ public class StarDisplay : MonoBehaviour
 	public bool IsDynamic; // Участвует ли в анимациях
 	public int MeshSchemaIndex; // 0 - маленькая, 1 - большая
 	
-	private LineManager lineManager;
+	private AnimationManager lineManager;
 	private Vector3 initialScale;
 
-	public void Init(StarData starData, LineManager lineManager, Transform cameraTransform)
+	public void Init(StarData starData, AnimationManager lineManager, Transform cameraTransform)
 	{
 		// Инициализируем звезду
 		this.lineManager = lineManager;
@@ -50,7 +50,7 @@ public class StarDisplay : MonoBehaviour
 	// Два способа реализации последовательной анимации:
 
 	// Асинхронно - более стабильная
-	public async Task<List<StarDisplay>> AnimateAllNeighboursAsync(int i, CancellationToken token)
+	public async Task<List<StarDisplay>> AnimateAllNeighboursAsync(int animationGroup, CancellationToken token)
 	{
 		List<StarDisplay> returnValue = new List<StarDisplay>();
 		try
@@ -73,9 +73,9 @@ public class StarDisplay : MonoBehaviour
 				var key = connection.Item1.GetInstanceID();
 				lineManager.UsedLines.Add(key, connection.Item1);
 
-				if (!lineManager.LineAnimationGroups.ContainsKey(i))
-					lineManager.LineAnimationGroups[i] = new List<LineController>();
-				lineManager.LineAnimationGroups[i].Add(connection.Item1);
+				if (!lineManager.LineAnimationGroups.ContainsKey(animationGroup))
+					lineManager.LineAnimationGroups[animationGroup] = new List<LineController>();
+				lineManager.LineAnimationGroups[animationGroup].Add(connection.Item1);
 
 				// Анимация растягивания
 				var startStar = this;

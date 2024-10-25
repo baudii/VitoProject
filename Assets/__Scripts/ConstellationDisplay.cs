@@ -7,13 +7,12 @@ public class ConstellationDisplay : MonoBehaviour
 	[SerializeField] private StarDisplay starPrefab;
 	[SerializeField] private Transform GFX;
 	[SerializeField] private Renderer rend;
-	[SerializeField] private LineController linePrefab;
 	[SerializeField] private MeshCombiner meshCombinerPrefab;
-	[SerializeField] private LineManager lineManagerPrefab;
+	[SerializeField] private AnimationManager lineManagerPrefab;
 	[SerializeField] bool stop;
 
 	public ConstellationData constellationData { get; private set; }
-	public LineManager LineManager { get; private set; }
+	public AnimationManager LineManager { get; private set; }
 	
 
 	private bool isLinesEnabled;
@@ -27,14 +26,14 @@ public class ConstellationDisplay : MonoBehaviour
 		rend.sharedMaterial = instanceInfo.Material;
 		var cam = Camera.main;
 		SetupTransform(constellationData, cam.transform);
-		var color = rend.material.color;
+		var color = rend.sharedMaterial.color;
 		color.a = 0;
-		rend.material.color = color; // rend - отображает изображение созвездия. По умолчанию оно выключено
+		rend.sharedMaterial.color = color; // rend - отображает изображение созвездия. По умолчанию оно выключено
 		rend.gameObject.SetActive(false);
 
 		CreateSkybox(cam.transform);
 		LineManager = Instantiate(lineManagerPrefab, transform);
-		LineManager.Init(this, starPrefab, linePrefab);
+		LineManager.Init(this, starPrefab);
 
 	}
 
@@ -56,6 +55,7 @@ public class ConstellationDisplay : MonoBehaviour
 			OnComplete?.Invoke();
 		}));
 	}
+
 	public void ToggleAnimateLines()
 	{
 		if (isLinesEnabled)

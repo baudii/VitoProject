@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5183183348018102683}
   - component: {fileID: 1595404515886057327}
   m_Layer: 0
-  m_Name: LineManager
+  m_Name: AnimationManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,6 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2130903940578481928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8f950fa0ae5d0a4c9dee68aab6e219b, type: 3}
+  m_Script: {fileID: 11500000, guid: a9354f76762da64478aa1988dd81b5b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linePrefab: {fileID: 1869456495877735470, guid: 4cdc70ee4fa4d6044a078180cac8b660, type: 3}

@@ -66,7 +66,7 @@ public static class Helper
 	// coefficient - число в (0,1), такое, что мы увеличиваемся duration * coefficient времени и уменьшаемся остальное время
 	public static IEnumerator ScaleBounceAnimation(Transform t, float duration, Vector3 initialScale, float scaleMultiplier, float coefficient = 0.5f)
 	{
-		Vector3 targetScale = initialScale * scaleMultiplier;
+		Vector3 targetScale = Vector3.one * scaleMultiplier;
 
 		// Линейно интерполируем elapsedTime по текущему скейлу звезды, чтобы продолжить анимацию
 		// Умножаем на coefficient, чтобы анимация продолжилась с увеличения звезды

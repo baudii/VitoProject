@@ -6,8 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 
-public class LineManager : MonoBehaviour
+public class AnimationManager : MonoBehaviour
 {
+	[SerializeField] private LineController linePrefab;
 	public StarDisplay CenterMostStar { get; private set; }
 
 	public Dictionary<int, LineController> UsedLines;
@@ -20,7 +21,6 @@ public class LineManager : MonoBehaviour
 	private ConstellationDisplay constDisplay;
 
 	private StarDisplay starPrefab;
-	private LineController linePrefab;
 
 	private Coroutine disablingDynamicStarsCoroutine;
 
@@ -37,7 +37,7 @@ public class LineManager : MonoBehaviour
 	private AnimationState currentLineState;
 
 
-	public void Init(ConstellationDisplay constDisplay, StarDisplay starPrefab, LineController linePrefab)
+	public void Init(ConstellationDisplay constDisplay, StarDisplay starPrefab)
 	{
 		lines = new List<LineController>();
 		UsedLines = new Dictionary<int, LineController>();
@@ -46,7 +46,6 @@ public class LineManager : MonoBehaviour
 
 		this.constDisplay = constDisplay;
 		this.starPrefab = starPrefab;
-		this.linePrefab = linePrefab;
 
 		CreateDynamicStarsAndLines(Camera.main.transform);
 
@@ -165,6 +164,7 @@ public class LineManager : MonoBehaviour
 			}
 
 			yield return new WaitUntil(() => animBuffer.Finished);
+			
 		}
 
 		LineAnimationGroups.Clear();
